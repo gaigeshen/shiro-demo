@@ -5,7 +5,7 @@ package work.gaigeshen.shiro.demo.accesstoken;
  */
 public interface AccessTokenGenerator {
 
-  String generateToken(String userId, String username);
+  String generateToken(UserDescriptor userDescriptor);
 
   boolean verifyToken(String token);
 }

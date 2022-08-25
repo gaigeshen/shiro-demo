@@ -19,9 +19,10 @@ public class JwtAccessTokenGenerator implements AccessTokenGenerator {
   }
 
   @Override
-  public String generateToken(String userId, String username) {
+  public String generateToken(UserDescriptor userDescriptor) {
     return JWT.create().withIssuedAt(new Date())
-            .withClaim("username", username).withClaim("userId", userId)
+            .withClaim("userId", userDescriptor.getUserId())
+            .withClaim("username", userDescriptor.getUsername())
             .sign(Algorithm.HMAC256(secret));
   }
 
