@@ -32,12 +32,12 @@ public class DefaultBearerTokenCreator implements BearerTokenCreator {
   }
 
   @Override
-  public String createToken(UserProfile userDescriptor) {
-    if (Objects.isNull(userDescriptor)) {
+  public String createToken(UserProfile userProfile) {
+    if (Objects.isNull(userProfile)) {
       throw new IllegalArgumentException("user descriptor cannot be null");
     }
-    String userId = userDescriptor.getUserId();
-    String username = userDescriptor.getUsername();
+    String userId = userProfile.getUserId();
+    String username = userProfile.getUsername();
 
     LocalDateTime currentTime = LocalDateTime.now();
     LocalDateTime expiresTime = currentTime.plusSeconds(expiresInSeconds);
@@ -65,10 +65,7 @@ public class DefaultBearerTokenCreator implements BearerTokenCreator {
     }
     String userId = decoded.getClaim("userId").asString();
     String username = decoded.getClaim("username").asString();
-    List<String> roles = decoded.getClaim("roles").asList(String.class);
-    List<String> permissions = decoded.getClaim("permissions").asList(String.class);
-
-    return new UserProfile(userId, username, new HashSet<>(roles), new HashSet<>(permissions));
+    return new UserProfile(userId, username);
   }
 
 }
