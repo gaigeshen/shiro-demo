@@ -1,13 +1,13 @@
 package work.gaigeshen.shiro.demo;
 
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
-import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import work.gaigeshen.shiro.demo.accesstoken.AccessTokenGenerator;
-import work.gaigeshen.shiro.demo.accesstoken.JwtAccessTokenGenerator;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -17,19 +17,22 @@ import work.gaigeshen.shiro.demo.accesstoken.JwtAccessTokenGenerator;
 public class ShiroConfiguration {
 
   @Bean
-  public AccessTokenGenerator accessTokenGenerator() {
-    return new JwtAccessTokenGenerator("secret");
+  public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+    ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+    factoryBean.setSecurityManager(securityManager);
+
+    factoryBean.setLoginUrl("/login");
+
+    Map<String, String> filterChainDefinitions = new HashMap<>();
+    filterChainDefinitions.put("/register", "anon");
+    filterChainDefinitions.put("/login", "anon");
+    filterChainDefinitions.put("/**", "authcBearer");
+    factoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
+
+    factoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
+    factoryBean.setGlobalFilters(Collections.singletonList("noSessionCreation"));
+
+    return factoryBean;
   }
 
-  @Bean
-  public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-    DefaultShiroFilterChainDefinition filterChainDefinition = new DefaultShiroFilterChainDefinition();
-    filterChainDefinition.addPathDefinition("/**", "anon");
-    return filterChainDefinition;
-  }
-
-  @Bean
-  public CacheManager cacheManager() {
-    return new MemoryConstrainedCacheManager();
-  }
 }
