@@ -6,9 +6,9 @@ import work.gaigeshen.shiro.demo.UserProfile;
  *
  * @author gaigeshen
  */
-public interface TokenManager {
+public interface BearerTokenCreator {
 
-  void invalidate(String token);
+  void invalidate(String accessToken);
 
   String createToken(UserProfile profile);
 
