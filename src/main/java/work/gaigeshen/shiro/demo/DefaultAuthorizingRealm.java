@@ -57,15 +57,14 @@ public class DefaultAuthorizingRealm extends AuthorizingRealm {
       UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
       UserProfile userProfile = userService.findUserProfile(usernamePasswordToken.getUsername());
       if (Objects.isNull(userProfile)) {
-        throw new UnknownAccountException(usernamePasswordToken.getUsername());
+        return null;
       }
       UserPassword userPassword = userService.findUserPassword(usernamePasswordToken.getUsername());
       if (Objects.isNull(userPassword)) {
-        throw new UnknownAccountException(usernamePasswordToken.getUsername());
+        return null;
       }
       return new SimpleAuthenticationInfo(userProfile, userPassword.getPassword(), "default");
-    }
-    else if (token instanceof BearerToken) {
+    } else if (token instanceof BearerToken) {
       String tokenValue = ((BearerToken) token).getToken();
       UserProfile userProfile = bearerTokenCreator.parseToken(tokenValue);
       if (Objects.isNull(userProfile)) {
