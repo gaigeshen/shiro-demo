@@ -1,7 +1,6 @@
 package work.gaigeshen.shiro.demo.extension.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import work.gaigeshen.shiro.demo.commons.json.JsonCodec;
@@ -13,7 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -35,27 +33,17 @@ public class AccessTokenFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
         String accessTokenHeader = httpRequest.getHeader(ACCESS_TOKEN_HEADER);
-        if (Objects.isNull(accessTokenHeader) || !executeLogin(request, response)) {
-            renderErrorResult(createErrorResult(), response);
+        if (Objects.isNull(accessTokenHeader)) {
+            return true;
+        }
+        if (!executeLogin(request, response)) {
+            Result<?> errorResult = Results.create(HttpStatusResultCode.UNAUTHORIZED);
+            HttpServletResponse httpResponse = WebUtils.toHttp(response);
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            httpResponse.setContentType("application/json;charset=UTF-8");
+            httpResponse.getWriter().write(JsonCodec.instance().encode(errorResult));
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
-
-        return true;
-    }
-
-    protected void renderErrorResult(Result<?> errorResult, ServletResponse response) throws IOException {
-        HttpServletResponse httpResponse = WebUtils.toHttp(response);
-        httpResponse.setStatus(HttpServletResponse.SC_OK);
-        httpResponse.setContentType("application/json;charset=UTF-8");
-        httpResponse.getWriter().write(JsonCodec.instance().encode(errorResult));
-    }
-
-    protected Result<?> createErrorResult() {
-        return Results.create(HttpStatusResultCode.UNAUTHORIZED);
     }
 }
