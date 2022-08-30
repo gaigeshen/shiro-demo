@@ -1,4 +1,4 @@
-package work.gaigeshen.shiro.demo;
+package work.gaigeshen.shiro.demo.user;
 
 import java.util.Collections;
 import java.util.Set;
@@ -9,19 +9,19 @@ import java.util.Set;
  */
 public class UserAuthorization {
 
-  private final String userId;
+  private final long userId;
 
   private final Set<String> roles;
 
   private final Set<String> permissions;
 
-  public UserAuthorization(String userId, Set<String> roles, Set<String> permissions) {
+  public UserAuthorization(long userId, Set<String> roles, Set<String> permissions) {
     this.userId = userId;
     this.roles = roles;
     this.permissions = permissions;
   }
 
-  public String getUserId() {
+  public long getUserId() {
     return userId;
   }
 

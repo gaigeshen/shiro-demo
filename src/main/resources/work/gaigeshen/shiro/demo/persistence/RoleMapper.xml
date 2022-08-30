@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="work.gaigeshen.shiro.demo.persistence.RoleMapper">
+
+    <select id="selectByIds" resultType="Role">
+        select id, name from role
+        <where>
+            <if test="ids != null and ids.size() > 0">
+                <foreach collection="ids" item="item" open="and id in (" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

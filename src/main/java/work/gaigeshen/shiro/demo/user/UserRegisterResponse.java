@@ -1,4 +1,4 @@
-package work.gaigeshen.shiro.demo;
+package work.gaigeshen.shiro.demo.user;
 
 /**
  *
@@ -6,5 +6,5 @@ package work.gaigeshen.shiro.demo;
  */
 public interface UserRegisterResponse {
 
-  UserProfile getProfile();
+  UserDescriptor getProfile();
 }
